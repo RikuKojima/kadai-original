@@ -52,4 +52,55 @@ class User extends Authenticatable
     public function favorite_question() {
         return $this->belongsToMany('App\Question','question_favorite','user_id','question_id');
     }
+    
+    // メソッド実装
+    //question favorited or not ? 
+    public function is_favorited_q($q_id){
+        return $this->favorite_question()->where('question_id',$q_id)->exists();
+    }
+    
+    //add favo
+    public function add_favorite_q($q_id){
+        
+        if($this->is_favorited_q($q_id)) {
+            return false;
+        }else{
+            $this->favorite_question()->attach($q_id);
+        }
+    }
+    
+    //remove favo
+    public function rm_favorite_q($q_id){
+        if($this->is_favorited_q($q_id)){
+            $this->favorite_question()->detach($q_id);
+        }else{
+            return false;
+        }
+    }
+    //ここまでQuestion
+    
+    //answer favoed or not?
+    public function is_favorited_a($a_id) {
+        return $this->favorite_answer()->where('answer_id',$q_id)->exists();
+    }
+    
+    //add favo
+    public function add_favorite_a($a_id) {
+        if($this->is_favorited_a($a_id)) {
+            return false;
+        }else{
+            $this->favorite_answer()->attach($a_id);
+        }
+    }
+    
+    //rm favo
+    public function rm_favorite_a($a_id){
+        if($this->is_favorited_a($a_id)){
+            $this->favorite_answer()->detach($a_id);
+        }else{
+            return false;
+        }
+    }
+    //ここまでAnswer
+    
 }

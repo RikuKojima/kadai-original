@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Answer extends Model
 {   
     protected $fillable = ['user_id','content'];
+    
     //userに所属
     public function user() {
         return $this->belongsTo('App\User');
@@ -22,4 +23,6 @@ class Answer extends Model
     public function favorited() {
         return $this->belongsToMany('App\User','answer_favorite','answer_id','user_id');
     }
+    
+    
 }

@@ -22,7 +22,7 @@
     @include('commons.navbar')
     
     <div class="container">
-        @include('aommons.error_message')
+        @include('commons.error_message')
         
         @yield('content')
         

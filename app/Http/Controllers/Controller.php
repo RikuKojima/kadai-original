@@ -10,4 +10,16 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    
+    //ユーザがもつ質問や回答の数をカウントする
+    public function counts($user) {
+        $count_questions = $user->questions()->count();
+        $count_answers = $user->answers()->count();
+        
+        
+        return [
+            'count_questions' => $count_questions,
+            'count_answers' => $count_answers,
+            ];
+    }
 }

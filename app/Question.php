@@ -21,6 +21,8 @@ class Question extends Model
     //question_favorteでmanyTomany
     public function favorited() {
         return $this->belongsToMany('App\User','question_favorte','question_id','user_id');
+    
+
     }
     
 }

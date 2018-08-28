@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Socialite;
 class SocialAccountController extends Controller
 {
     //
-    
+
     public function redirectToProvider($provider)
     {
         return \Socialite::driver($provider)->redirect();
@@ -19,23 +19,24 @@ class SocialAccountController extends Controller
      *
      * @return Response
      */
-    public function handleProviderCallback(\App\SocialAccountsService $accountService, $provider)
-    {
+    #認証終了後の作業
+    public function handleProviderCallback(\App\SocialAccountsService $accountService, $provider) {
+      try {
+           $user = \Socialite::with($provider)->user();
+       } catch (\Exception $e) {
+         #エラー発生
+          print('エラー発生');
+           return redirect('/login');
+       }
 
-        try {
-            $user = \Socialite::with($provider)->user();
-        } catch (\Exception $e) {
-            return redirect('/login');
-        }
+       $authUser = $accountService->findOrCreate(
+           $user,
+           $provider
+       );
+       #ユーザをログインさせる
+       auth()->login($authUser, true);
 
-        $authUser = $accountService->findOrCreate(
-            $user,
-            $provider
-        );
+       return redirect()->to('/');
+   }
 
-        auth()->login($authUser, true);
-
-        return redirect()->to('/');
-    }
 }
-

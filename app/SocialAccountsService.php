@@ -4,8 +4,9 @@ namespace App;
 
 use Laravel\Socialite\Contracts\User as ProviderUser;
 
-class SocialAccountService
+class SocialAccountsService
 {
+  ##ローカルUserと関連するSNSアカウントを作成または取得する
     public function findOrCreate(ProviderUser $providerUser, $provider)
     {
         $account = LinkedSocialAccount::where('provider_name', $provider)
@@ -13,13 +14,15 @@ class SocialAccountService
                    ->first();
 
         if ($account) {
+            //アカウントが存在するとき
             return $account->user;
         } else {
-
+        #指定したアカウントはない場合
+        #emailを元にもう一度探す
         $user = User::where('email', $providerUser->getEmail())->first();
 
         if (! $user) {
-            $user = User::create([  
+            $user = User::create([
                 'email' => $providerUser->getEmail(),
                 'name'  => $providerUser->getName(),
             ]);

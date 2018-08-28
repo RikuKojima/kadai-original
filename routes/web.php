@@ -24,6 +24,18 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-//SNSログイン
+//SNS認証
+//各サービスに向かうときと、帰ってきたとき用
 Route::get('login/{provider}', 'Auth\SocialAccountController@redirectToProvider');
 Route::get('login/{provider}/callback', 'Auth\SocialAccountController@handleProviderCallback');
+
+//ログイン
+Route::get('login','Auth\LoginController@showLoginform')->name('login');
+Route::post('login','Auth\LoginController@login')->name('login.post');
+Route::get('logout','Auth\LoginController@logout')->name('logout.get');
+
+//ログインしてないとできないこと
+Route::group(['middleware' => 'auth'], function() {
+    Route::resource('users','UsersControlelr',['only' => ['index','show']]);
+    Route::resource('questions','QuestionsController',['only' => ['store','destroy']]);
+});
