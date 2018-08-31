@@ -29,6 +29,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('login/{provider}', 'Auth\SocialAccountController@redirectToProvider');
 Route::get('login/{provider}/callback', 'Auth\SocialAccountController@handleProviderCallback');
 
+
 //ログイン
 Route::get('login','Auth\LoginController@showLoginform')->name('login');
 Route::post('login','Auth\LoginController@login')->name('login.post');

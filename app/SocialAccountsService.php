@@ -9,7 +9,7 @@ class SocialAccountsService
   ##ローカルUserと関連するSNSアカウントを作成または取得する
     public function findOrCreate(ProviderUser $providerUser, $provider)
     {
-        $account = LinkedSocialAccount::where('provider_name', $provider)
+        $account = LinkedSocialAccounts::where('provider_name', $provider)
                    ->where('provider_id', $providerUser->getId())
                    ->first();
 

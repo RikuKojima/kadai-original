@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use RuntimeException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Socialite;
+use Socialite\Contracts\User;
+
 class SocialAccountController extends Controller
 {
     //
@@ -22,10 +25,12 @@ class SocialAccountController extends Controller
     #認証終了後の作業
     public function handleProviderCallback(\App\SocialAccountsService $accountService, $provider) {
       try {
+
            $user = \Socialite::with($provider)->user();
        } catch (\Exception $e) {
-         #エラー発生
-          print('エラー発生');
+      
+          #print('エラー発生');
+
            return redirect('/login');
        }
 
