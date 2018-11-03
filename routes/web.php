@@ -19,6 +19,13 @@ Route::get('/', function () {
 Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
 Route::post('signup', 'Auth\RegisterController@register')->name('signup.post');
 
+// 仮登録用
+Route::post('register/pre_check', 'Auth\RegisterController@pre_check')->name('register.pre_check');
+
+// 本登録用
+Route::get('register/verify/{token}', 'Auth\RegisterController@showForm');
+Route::post('register/main_register', 'Auth\RegisterController@mainRegister')->name('register.main.registered');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -37,6 +44,23 @@ Route::get('logout','Auth\LoginController@logout')->name('logout.get');
 
 //ログインしてないとできないこと
 Route::group(['middleware' => 'auth'], function() {
-    Route::resource('users','UsersControlelr',['only' => ['index','show']]);
-    Route::resource('questions','QuestionsController',['only' => ['store','destroy']]);
+    Route::resource('users','UsersController');
+    Route::resource('questions','QuestionsController'); 
 });
+
+// アバター画像をアップ
+Route::get('profile','UsersController@update_avatar');
+
+
+
+//検索apiでタグの予想
+Route::group(['preix' => 'api', 'middleware' => 'auth'], function() {
+  Route::get('find', function(Illuminate\Http\Request $request) {
+    $keyword = $request->input('keyword');
+    Log::info($keyword);
+    $tags = DB::table('tags')->where('name','like','%'.$keyword.'%')->select('tags.id','tags.name','tags.display')->get();
+    return json_encode($tags);
+  })->name('api.tags');
+});
+
+

@@ -15,8 +15,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','field',
+        'name', 'email', 'password','field','email_valified','email_valify_token',
     ];
+
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -102,5 +104,7 @@ class User extends Authenticatable
         }
     }
     //ここまでAnswer
+
+    // ユーザ同士のフォロー実装
 
 }

@@ -28,8 +28,8 @@ class SocialAccountController extends Controller
 
            $user = \Socialite::with($provider)->user();
        } catch (\Exception $e) {
-      
-          #print('エラー発生');
+
+          print('エラー発生');
 
            return redirect('/login');
        }

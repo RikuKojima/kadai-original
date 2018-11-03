@@ -1,0 +1,74 @@
+
+ul.p-fvSnsRegist__body {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  list-style:none;
+}
+
+.u-flexBox {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  list-style:none;
+}
+
+.u-flexBox--spaceBetween {
+  justify-content: space-between;
+}
+
+.p-SnsLink {
+
+}
+
+a.icon-google {
+  background-image: url(/img/google.png);
+  -webkit-background-size: cover;
+  background-size: cover;
+  width:50px ;
+  height:50px;
+}
+
+.p-QuestionHead {
+  margin:0 auto 32px;
+  padding:32px 0;
+}
+
+#l-user__summary {
+  width: 184px;
+    padding: 0 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    z-index: 6;
+}
+
+.boxUserStatus {
+  margin:16px;
+  display:flex;
+}
+
+#create-main-content {
+  display:flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+}
+
+/* ヘッダー*/
+.headcontent {
+  background-color: #555;
+
+}
+
+.titleMain {
+  margin-bottom: 10px;
+}
+.boxUserStatus {
+  text:center;
+}

@@ -6,6 +6,13 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Mail\EmailVarification;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
+use App\Jobs\SendVerificationEmail;
+use Mail;
+use Carbon\Carbon;
+
 
 class RegisterController extends Controller
 {
@@ -27,7 +34,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/questions/create';
 
     /**
      * Create a new controller instance.
@@ -48,11 +55,19 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'field' => 'requied|string',
         ]);
+    }
+
+    public function pre_check(Request $request) {
+        $this->validator($request->all())->validate();
+        $request->flashOnly('email');
+
+        $bridge_request = $request->all();
+        $bridge_request['password_mask'] = "*****";
+
+        return view('auth.register_check')->with($bridge_request);
     }
 
     /**
@@ -63,11 +78,85 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+        $user =  User::create([
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'field' => $data['field'],
+            'email_valify_token' => base64_encode($data['email']),
         ]);
+
+        $email = new EmailVarification($user);
+
+        Mail::to($user->email)->send($email);
+
+        return $user;
+    }
+
+    public function register(Request $request) {
+        event(new Registered($user = $this->create($request->all())));
+
+        return view('auth.registered');
+    }
+
+    public function showForm($email_token) {
+        //使用可能なトークンか
+        if(!User::where('email_valify_token', $email_token)->exists()){
+            return view('auth.main.register')->with('message', '無効なトークンです');
+        }else{
+            $user = User::where('email_valify_token',$email_token)->first();
+            //定数で指定したステータスで場合分け
+            if($user->status == config('const.USER_STATUS.REGISTER')){
+                logger('status'. $user->status);
+                return view('auth.main.register')->with('message','すでに本登録されています。ログインして完了してください。');
+            }
+
+            //ユーザステータス更新clear必須
+            $user->status = config('const.USER_STATUS.REGISTER');
+        
+            //ライブラリcarbon::now()は標準時刻
+            if($user->save()) {
+                return view('auth.main.register',compact('email_token'));
+
+            }else{
+                return view('auth.main.register')->with('message', 'メール認証に失敗しました。再度メールからリンクをクリックしてください。');
+            }
+        }
+    }
+
+    //確認画面の追加
+
+    public function mainCheck(Request $request){
+        $request->validate([
+            'name' => 'equired|string',
+            'name_pronunciation' => 'required|string',
+            'birth_year' => 'required|numeric',
+            'birth_month' => 'required|numeric', 
+            'birth_day' => 'required|numeric',
+
+        ]);
+
+        $email_token = $request->email_token;
+
+
+    $user = new User();
+    $user->name = $request->name;
+    $user->name_pronunciation = $request->name_pronunciation;
+    $user->birth_year = $request->birth_year;
+    $user->birth_month = $request->birth_month;
+    $user->birth_day = $request->birth_day;
+
+    return view('auth.main.register.check', compact('user', 'email_token'));
+    }
+
+    public function mainRegister(Request $request) {
+        $user = User::where('email_varify_token',$request->email_token)->first();
+        $user->status = config('const.USER.STATUS.REGISTER');
+        $user = new User();
+        $user->name = $request->name;
+        $user->name_pronunciation = $request->name_pronunciation;
+        $user->birth_year = $request->birth_year;
+        $user->birth_month = $request->birth_month;
+        $user->birth_day = $request->birth_day;
+        $user->save();
+        return view('auth.main.registered');
     }
 }
