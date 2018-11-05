@@ -60,7 +60,7 @@
             </div> -->
             <div id="tab2" class="tab-pane active">
                 @foreach($user->questions as $question)
-                    <div class="card mb-3">
+                    <a href="{{ route('questions.show',['question_id' => $question->id]) }}" class="card mb-3">
                         <div class="card-header">
                             {!! $question->title !!}
                         </div>
@@ -68,7 +68,7 @@
                             {!!$question->mark_content!!}
                         </div>
                         
-                    </div>
+                    </a>
                     
                 @endforeach
             </div>

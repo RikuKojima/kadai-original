@@ -5,18 +5,18 @@
     <!-- ヘッダー -->
     <div id="headcontent" class=''>
 
-      <div class="p-QuestionHead u-flexBox u-flexBox-between text-center">
-        <div class="question-title center-block">
+      <div class="p-QuestionHead row">
+        <div class="question-title col-9">
           <h1>{!! $question->title !!}</h1>
           <div class="question-tags">
           タグ:
           @foreach($question->tags as $tag)
-            <label class = "label label-info">{{$tag->name}}</label>
+            <label class = "badge badge-secondary">{{$tag->name}}</label>
           @endforeach
           </div>
         </div>
         
-        <div class="question-info center-block">
+        <div class="question-info col-3">
           <div class="question-info-user">
           投稿者：{!! $question->user->name !!}
           </div>
@@ -34,8 +34,8 @@
     </div>
 
     <!-- ボディ -->
-    <div id="bodycontent" class= "u-flexBox u-flexBox--spaceBetween">
-      <div class="maincontent">
+    <div id="bodycontent" class= "row mt-5">
+      <div class="maincontent col-9">
         <div class="question">
           {!! $question->mark_content !!}
         </div>
@@ -50,7 +50,7 @@
 
         @endif
       </div>
-      <div class="sub-content">
+      <div class="sub-content col-3">
         <div class="jumbotron">
           <h3>関連した項目</h3>
         </div>

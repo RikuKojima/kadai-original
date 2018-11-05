@@ -39,6 +39,11 @@ class QuestionsController extends Controller
 
       }
 
+      public function show($question_id) {
+        $question = Question::find($question_id);
+        return view('questions.show',['question' => $question,]);
+      }
+
 
     public function destroy($id) {
       $question = \App\Question::find($id);
